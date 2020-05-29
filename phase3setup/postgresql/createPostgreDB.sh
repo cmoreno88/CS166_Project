@@ -1,12 +1,14 @@
 #! /bin/bash
-DBNAME=$1
-
-echo "Checking server status"
+PGPORT=9998
+PGDATA=/tmp/$USER/myDB/data
+echo "creating db named ... "$USER"_DB"
+createdb -h localhost -p $PGPORT $USER"_DB"
 pg_ctl status
 
 echo "Copying csv files ... "
-cp ../data/*.csv /tmp/$USER/test/data/.
+sleep 1
+cp ../data/*.csv /tmp/$USER/myDB/data/.
 
 echo "Initializing tables .. "
 sleep 1
-psql -h /tmp/$LOGNAME/sockets $DBNAME < ../sql/create.sql
+psql -h localhost -p $PGPORT $USER"_DB" < ../sql/create.sql

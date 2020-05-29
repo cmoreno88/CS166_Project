@@ -1,7 +1,7 @@
 #! /bin/bash
-DBNAME=$1
-PORT=$2
-USER=$3
+SUFFIX='_DB'
+DBNAME=$USER$SUFFIX
+PORT=9998
 
-# Example: source ./run.sh flightDB 5432 user
+# Example: ./run.sh
 java -cp lib/*:bin/ Ticketmaster $DBNAME $PORT $USER
