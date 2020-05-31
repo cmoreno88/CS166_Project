@@ -11,12 +11,8 @@
  */
 
 
-import java.sql.DriverManager;
-import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import javax.swing.plaf.nimbus.State;
+import java.sql.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
@@ -211,14 +207,16 @@ public class Ticketmaster{
 	 * 
 	 * @param args the command line arguments this inclues the <mysql|pgsql> <login file>
 	 */
-	public static void main (String[] args) {
+	public static void main (String[] args){
+
+		/*
 		if (args.length != 3) {
 			System.err.println (
 				"Usage: " + "java [-classpath <classpath>] " + Ticketmaster.class.getName () +
 		            " <dbname> <port> <user>");
 			return;
 		}//end if
-		
+		*/
 		Ticketmaster esql = null;
 		
 		try{
@@ -234,11 +232,11 @@ public class Ticketmaster{
 			}
 			
 			System.out.println("(2)");
-			String dbname = args[0];
-			String dbport = args[1];
-			String user = args[2];
+			String dbname = "cs166_project_part3";
+			String dbport = "5432";
+			String user = "postgres";
 			
-			esql = new Ticketmaster (dbname, dbport, user, "");
+			esql = new Ticketmaster (dbname, dbport, user, "castro1996");
 			
 			boolean keepon = true;
 			while(keepon){
@@ -312,8 +310,11 @@ public class Ticketmaster{
 		return input;
 	}//end readChoice
 	
-	public static void AddUser(Ticketmaster esql){//1
-		
+	public static void AddUser(Ticketmaster esql) throws SQLException {//1
+		//Testing
+		//Listing all movies
+		esql.executeQueryAndPrintResult("SELECT * FROM movies");
+
 	}
 	
 	public static void AddBooking(Ticketmaster esql){//2
