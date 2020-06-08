@@ -63,11 +63,8 @@ CREATE TABLE Users (
     email VARCHAR(64) NOT NULL,
     lname VARCHAR(32) NOT NULL,  -- Last name
     fname VARCHAR(32) NOT NULL,  -- First name
-    phone VARCHAR(16),  -- Or some string format, e.g. +1 (123) 456-789. Numer type cannot save + sign for country code.
-    -- Or use the following 2 attributes, area code + phone number, then both can be number type
-    -- area INTEGER,
-    -- phone INTEGER,
-    pwd TEXT NOT NULL,  -- Password (should be hash instead of plain text)
+    phone NUMERIC(10, 0),
+    pwd CHAR(64) NOT NULL,  -- SHA256 hash of password
     PRIMARY KEY(email)
 );
 
@@ -89,7 +86,7 @@ CREATE TABLE Bookings (
     sid BIGINT NOT NULL,  -- Show ID
     email VARCHAR(64) NOT NULL,  -- User account
     PRIMARY KEY(bid),
-    FOREIGN KEY(sid) REFERENCES Shows(sid),
+    FOREIGN KEY(sid) REFERENCES Shows(sid) ON DELETE CASCADE,
     FOREIGN KEY(email) REFERENCES Users(email)    
     -- A booking has at most one payment is enforced in Payments via UNIQUE
 );
@@ -102,7 +99,7 @@ CREATE TABLE Payments (
     amount REAL NOT NULL,
     trid BIGINT,  -- Transaction ID
     PRIMARY KEY(pid),
-    FOREIGN KEY(bid) REFERENCES Bookings(bid),
+    FOREIGN KEY(bid) REFERENCES Bookings(bid) ON DELETE CASCADE,
     UNIQUE(bid)  -- No two payments can have the same booking
 );
 

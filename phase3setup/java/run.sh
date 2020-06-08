@@ -1,7 +1,9 @@
-#! /bin/bash
-SUFFIX='_DB'
-DBNAME=$USER$SUFFIX
-PORT=9998
+#!/bin/bash
+root=$(realpath $(dirname "$0"))
+root=$(dirname $root)
+dbname=$(logname)_db
+
+cd $root/java
 
 # Example: ./run.sh
-java -cp lib/*:bin/ Ticketmaster $DBNAME $PORT $USER
+java -cp lib/*:bin/ Ticketmaster $dbname $PGPORT $(logname)
