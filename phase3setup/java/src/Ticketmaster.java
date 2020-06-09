@@ -12,11 +12,8 @@
 
 
 import javax.swing.plaf.nimbus.State;
+import java.io.*;
 import java.sql.*;
-import java.io.File;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -317,8 +314,28 @@ public class Ticketmaster{
 
 	}
 	
-	public static void AddBooking(Ticketmaster esql){//2
-		
+	public static void AddBooking(Ticketmaster esql) throws IOException, SQLException {//2
+		//Grab the higest bid
+		String query = "SELECT MAX(bid) FROM bookings";
+		List<List<String>> maxBid = esql.executeQueryAndReturnResult(query);
+		Integer bid = Integer.parseInt(maxBid.get(0).get(0)) + 1;
+		//Grab the current date/time
+		String dateTime = "SELECT CURRENT_TIMESTAMP";
+
+		System.out.print("Enter email: ");
+		String email = in.readLine();
+		System.out.print("Enter number of seats: ");
+		String numSeats = in.readLine();
+		System.out.print("Enter seat id: ");
+		String sid = in.readLine();
+		System.out.print("Paid or Pending: ");
+		String status = "";
+		do {
+			status = in.readLine();
+		}while (!status.equals("Paid") || !status.equals("Pending"));
+
+
+
 	}
 	
 	public static void AddMovieShowingToTheater(Ticketmaster esql){//3
