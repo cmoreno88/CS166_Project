@@ -16,6 +16,7 @@ import java.io.*;
 import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * This class defines a simple embedded SQL utility class that is designed to
@@ -315,24 +316,56 @@ public class Ticketmaster{
 	}
 	
 	public static void AddBooking(Ticketmaster esql) throws IOException, SQLException {//2
-		//Grab the higest bid
+		Scanner input = new Scanner(System.in);
+		/*
+		Grab the highest bid
+		 */
 		String query = "SELECT MAX(bid) FROM bookings";
+		//Return result as a list
 		List<List<String>> maxBid = esql.executeQueryAndReturnResult(query);
+		//Grab highest bid and add 1
 		Integer bid = Integer.parseInt(maxBid.get(0).get(0)) + 1;
 		//Grab the current date/time
-		String dateTime = "SELECT CURRENT_TIMESTAMP";
-
+		String dateTime = "(SELECT CURRENT_TIMESTAMP)";
+		//Prompt user to enter email, seats, id, and status
 		System.out.print("Enter email: ");
 		String email = in.readLine();
 		System.out.print("Enter number of seats: ");
-		String numSeats = in.readLine();
-		System.out.print("Enter seat id: ");
-		String sid = in.readLine();
+		int numSeats = input.nextInt();
+		System.out.print("Enter showing id: ");
+		int sid = input.nextInt();
 		System.out.print("Paid or Pending: ");
-		String status = "";
-		do {
-			status = in.readLine();
-		}while (!status.equals("Paid") || !status.equals("Pending"));
+		String status = in.readLine().toLowerCase();
+		boolean statusChoice = true;
+		while(statusChoice)
+		{
+			if(status.equals("paid"))
+			{
+				status = "Paid";
+				statusChoice = false;
+			}
+			else if(status.equals("pending"))
+			{
+				status = "Pending";
+				statusChoice = false;
+			}
+			else
+			{
+				System.out.print("Invalid choice. \n Paid or Pending: ");
+				status = in.readLine().toLowerCase();
+			}
+
+
+		}
+
+		//Insert values into the query
+		String insertQuery = "INSERT INTO bookings VALUES(" + bid+ "," +  "\'"+ status + "\'"
+								+ "," + dateTime + "," + numSeats + "," + sid
+								+ "," + "\'" + email +"\'" + ")";
+		//Show the query to the console.
+		System.out.println(insertQuery);
+		//Execute the query
+		esql.executeUpdate(insertQuery);
 
 
 
