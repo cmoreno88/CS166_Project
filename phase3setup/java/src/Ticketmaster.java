@@ -11,6 +11,8 @@
  */
 
 
+import org.postgresql.core.SqlCommand;
+
 import javax.swing.plaf.nimbus.State;
 import java.io.*;
 import java.sql.*;
@@ -450,9 +452,22 @@ public class Ticketmaster{
 		
 	}
 	
-	public static void ListShowsStartingOnTimeAndDate(Ticketmaster esql){//10
-		//
-		
+	public static void ListShowsStartingOnTimeAndDate(Ticketmaster esql) throws IOException, SQLException {//10
+		/*
+		List the shows that start on the given time and date
+		 */
+		//Grab the date
+		System.out.print("Input the date that you are searching for (yyyy-mm-dd): ");
+		String date = in.readLine();
+		//Grab the time
+		System.out.print("Input the start time that you are searching for (hh:mm:ss): ");
+		String time = in.readLine();
+
+		//Execute query
+		esql.executeQueryAndPrintResult("SELECT * " +
+										"FROM shows " +
+										"WHERE sdate = " + "\'" + date + "\'" +
+										"AND sttime = " + "\'" + time + "\'");
 	}
 
 	public static void ListMovieTitlesContainingLoveReleasedAfter2010(Ticketmaster esql){//11
@@ -460,8 +475,15 @@ public class Ticketmaster{
 		
 	}
 
-	public static void ListUsersWithPendingBooking(Ticketmaster esql){//12
-		//
+	public static void ListUsersWithPendingBooking(Ticketmaster esql) throws SQLException{//12
+		/*
+		List the First Name, Last Name, and email of Users with 'Pending' bookings
+		 */
+		//Execute query
+		esql.executeQueryAndPrintResult("SELECT u.fname, u.lname, u.email " +
+										"FROM users u, bookings b " +
+										"WHERE u.email = b.email " +
+										"AND b.status = 'Pending' ");
 		
 	}
 
