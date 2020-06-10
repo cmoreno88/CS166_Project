@@ -167,7 +167,7 @@ public class Ticketmaster{
 
 		int rowCount = 0;
 
-		//iterates through the result set and count nuber of results.
+		//iterates through the result set and count number of results.
 		if(rs.next()){
 			rowCount++;
 		}//end while
@@ -302,6 +302,7 @@ public class Ticketmaster{
 		do {
 			System.out.print("Please make your choice: ");
 			try { // read the integer, parse it and break.
+				// parseInt() converts string to int
 				input = Integer.parseInt(in.readLine());
 				break;
 			}catch (Exception e) {
@@ -313,7 +314,18 @@ public class Ticketmaster{
 	}//end readChoice
 	
 	public static void AddUser(Ticketmaster esql){//1
-		
+		readChoice();
+		System.out.print("Looks good");
+		// Get input from user
+		/*
+		* Users have:
+    	email VARCHAR(64) NOT NULL,
+    	lname VARCHAR(32) NOT NULL,  -- Last name
+    	fname VARCHAR(32) NOT NULL,  -- First name
+    	phone NUMERIC(10, 0),
+    	pwd CHAR(64) NOT NULL,  -- SHA256 hash of password
+    	PRIMARY KEY(email)
+		* */
 	}
 	
 	public static void AddBooking(Ticketmaster esql){//2
