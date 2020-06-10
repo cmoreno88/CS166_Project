@@ -492,8 +492,27 @@ public class Ticketmaster{
 		
 	}
 
-	public static void ListBookingInfoForUser(Ticketmaster esql){//14
-		//
+	public static void ListBookingInfoForUser(Ticketmaster esql)throws IOException, SQLException{//14
+		/*
+		List the Movie Title, Show Date & Start Time, Theater Name, and Cinema Seat Number fora all Bookings
+		of a Given User
+		 */
+		//Grab the email
+		System.out.print("Input the email to search for: ");
+		String email = in.readLine();
+
+		//execute query
+		//**Also include a check for booking status to make sure the booking has been paid for. Will not display
+		//any results if status is 'Pending' or 'Cancelled'**
+		esql.executeQueryAndPrintResult("SELECT DISTINCT m.title, s.sdate, s.sttime, t.tname, c.sno " +
+										"FROM movies m, shows s, theaters t, cinemaseats c, bookings b, plays p " +
+										"WHERE b.email = " + "\'" + email + "\'" +
+										"AND b.sid = s.sid " +
+										"AND s.mvid = m.mvid " +
+										"AND s.sid = p.sid " +
+										"AND t.tid = p.tid " +
+										"AND c.tid = t.tid " +
+										"AND b.status = 'Paid'");
 		
 	}
 	
