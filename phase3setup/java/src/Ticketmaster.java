@@ -309,16 +309,14 @@ public class Ticketmaster{
 	}//end readChoice
 	
 	public static void AddUser(Ticketmaster esql) throws SQLException {//1
-		//Testing
-		//Listing all movies
-		esql.executeQueryAndPrintResult("SELECT * FROM movies");
+
 
 	}
 	
 	public static void AddBooking(Ticketmaster esql) throws IOException, SQLException {//2
 		Scanner input = new Scanner(System.in);
 		/*
-		Grab the highest bid
+		Grab the values: bid, dateTime, email, sets, showing id, and status to insert into the query.
 		 */
 		String query = "SELECT MAX(bid) FROM bookings";
 		//Return result as a list
@@ -375,24 +373,76 @@ public class Ticketmaster{
 		
 	}
 	
-	public static void CancelPendingBookings(Ticketmaster esql){//4
-		
+	public static void CancelPendingBookings(Ticketmaster esql) throws SQLException{//4
+		/*
+		Sets status to 'Cancelled' for all records that have status = 'Pending'
+		 */
+		esql.executeUpdate("UPDATE bookings " +
+								"SET status = 'Cancelled' " +
+								"WHERE status = 'Pending'");
 	}
 	
 	public static void ChangeSeatsForBooking(Ticketmaster esql) throws Exception{//5
 		
 	}
 	
-	public static void RemovePayment(Ticketmaster esql){//6
-		
+	public static void RemovePayment(Ticketmaster esql)throws IOException, SQLException{//6
+		Scanner input = new Scanner(System.in);
+		/*
+		Grab the booking id to set the status to 'Cancelled'
+		 */
+		//Grab the booking id
+		System.out.print("Input the booking id: ");
+		int bid = input.nextInt();
+
+		//Execute the query to change the status from 'Paid' to 'Cancelled' based on the booking id
+		esql.executeUpdate("UPDATE bookings " +
+								"SET status = 'Cancelled' " +
+								"WHERE bid = " + bid);
+
+		/*
+		Deletes payments based on the booking that was changed from 'Paid' to 'Cancelled'
+		*/
+		esql.executeUpdate("DELETE FROM payments " +
+								"USING bookings " +
+								"WHERE payments.bid = " + bid + " " +
+								"AND bookings.status = 'Cancelled'");
+
+
 	}
 	
 	public static void ClearCancelledBookings(Ticketmaster esql){//7
 		
 	}
 	
-	public static void RemoveShowsOnDate(Ticketmaster esql){//8
-		
+	public static void RemoveShowsOnDate(Ticketmaster esql) throws IOException, SQLException {//8
+		/*
+		Remove all shows on a given date based on a specific cinema (cinema theater?)
+		 */
+		//Grab the show id
+		System.out.print("Input the date that you want the shows removed (yyyy-mm-dd): ");
+		String date = in.readLine();
+
+		//Grab the cinema theater name
+		System.out.print("Input the cinema theater where you want the show removed: ");
+		String cinematheater = in.readLine();
+
+		//Execute query to remove shows based on a given date and cinema theater
+		esql.executeUpdate("DELETE FROM plays " +
+								"USING shows, theaters " +
+								"WHERE shows.sdate = " + "\'" + date + "\' " +
+								"AND theaters.tname = " + "\'" + cinematheater + "\' " +
+								"AND shows.sid = plays.sid " +
+								"AND theaters.tid = plays.tid");
+		/*
+		If there are nay bookings on this day, set the status to 'Cancelled'
+		 */
+		//Execute query to update the table if there are any bookings on the given day
+		esql.executeUpdate("UPDATE bookings " +
+								"SET status = 'Cancelled' " +
+								"WHERE bdatetime::text LIKE " + "\'" + date + "%\'");
+
+
 	}
 	
 	public static void ListTheatersPlayingShow(Ticketmaster esql){//9
