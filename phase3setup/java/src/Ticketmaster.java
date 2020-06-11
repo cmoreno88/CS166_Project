@@ -313,7 +313,9 @@ public class Ticketmaster{
 		return input;
 	}//end readChoice
 	
+	/*
 	public static void AddUser(Ticketmaster esql){//1
+
 		readChoice();
 		System.out.print("Looks good");
 		// Get input from user
@@ -326,64 +328,214 @@ public class Ticketmaster{
     	pwd CHAR(64) NOT NULL,  -- SHA256 hash of password
     	PRIMARY KEY(email)
 		* */
+		return;
 	}
-	
-	public static void AddBooking(Ticketmaster esql){//2
-		
+	*/
+
+	public static void AddUser(Ticketmaster esql) throws SQLException {//1
+
+
 	}
-	
+
+	public static void AddBooking(Ticketmaster esql) throws IOException, SQLException {//2
+		Scanner input = new Scanner(System.in);
+		/*
+		Grab the values: bid, dateTime, email, sets, showing id, and status to insert into the query.
+		 */
+		String query = "SELECT MAX(bid) FROM bookings";
+		//Return result as a list
+		List<List<String>> maxBid = esql.executeQueryAndReturnResult(query);
+		//Grab highest bid and add 1
+		Integer bid = Integer.parseInt(maxBid.get(0).get(0)) + 1;
+		//Grab the current date/time
+		String dateTime = "(SELECT CURRENT_TIMESTAMP)";
+		//Prompt user to enter email, seats, id, and status
+		System.out.print("Enter email: ");
+		String email = in.readLine();
+		System.out.print("Enter number of seats: ");
+		int numSeats = input.nextInt();
+		System.out.print("Enter showing id: ");
+		int sid = input.nextInt();
+		System.out.print("Paid or Pending: ");
+		String status = in.readLine().toLowerCase();
+		boolean statusChoice = true;
+		while(statusChoice)
+		{
+			if(status.equals("paid"))
+			{
+				status = "Paid";
+				statusChoice = false;
+			}
+			else if(status.equals("pending"))
+			{
+				status = "Pending";
+				statusChoice = false;
+			}
+			else
+			{
+				System.out.print("Invalid choice. \n Paid or Pending: ");
+				status = in.readLine().toLowerCase();
+			}
+
+
+		}
+
+		//Insert values into the query
+		String insertQuery = "INSERT INTO bookings VALUES(" + bid+ "," +  "\'"+ status + "\'"
+				+ "," + dateTime + "," + numSeats + "," + sid
+				+ "," + "\'" + email +"\'" + ")";
+		//Show the query to the console.
+		//System.out.println(insertQuery);
+		//Execute the query
+		esql.executeUpdate(insertQuery);
+
+
+
+	}
+
 	public static void AddMovieShowingToTheater(Ticketmaster esql){//3
-		
+
 	}
-	
-	public static void CancelPendingBookings(Ticketmaster esql){//4
-		
+
+	public static void CancelPendingBookings(Ticketmaster esql) throws SQLException{//4
+		/*
+		Sets status to 'Cancelled' for all records that have status = 'Pending'
+		 */
+		esql.executeUpdate("UPDATE bookings " +
+				"SET status = 'Cancelled' " +
+				"WHERE status = 'Pending'");
 	}
-	
+
 	public static void ChangeSeatsForBooking(Ticketmaster esql) throws Exception{//5
-		
+
 	}
-	
-	public static void RemovePayment(Ticketmaster esql){//6
-		
+
+	public static void RemovePayment(Ticketmaster esql)throws IOException, SQLException{//6
+		Scanner input = new Scanner(System.in);
+		/*
+		Grab the booking id to set the status to 'Cancelled'
+		 */
+		//Grab the booking id
+		System.out.print("Input the booking id: ");
+		int bid = input.nextInt();
+
+		//Execute the query to change the status from 'Paid' to 'Cancelled' based on the booking id
+		esql.executeUpdate("UPDATE bookings " +
+				"SET status = 'Cancelled' " +
+				"WHERE bid = " + bid);
+
+		/*
+		Deletes payments based on the booking that was changed from 'Paid' to 'Cancelled'
+		*/
+		esql.executeUpdate("DELETE FROM payments " +
+				"USING bookings " +
+				"WHERE payments.bid = " + bid + " " +
+				"AND bookings.status = 'Cancelled'");
+
+
 	}
-	
+
 	public static void ClearCancelledBookings(Ticketmaster esql){//7
-		
+
 	}
-	
-	public static void RemoveShowsOnDate(Ticketmaster esql){//8
-		
+
+	public static void RemoveShowsOnDate(Ticketmaster esql) throws IOException, SQLException {//8
+		/*
+		Remove all shows on a given date based on a specific cinema (cinema theater?)
+		 */
+		//Grab the show id
+		System.out.print("Input the date that you want the shows removed (yyyy-mm-dd): ");
+		String date = in.readLine();
+
+		//Grab the cinema theater name
+		System.out.print("Input the cinema theater where you want the show removed: ");
+		String cinematheater = in.readLine();
+
+		//Execute query to remove shows based on a given date and cinema theater
+		esql.executeUpdate("DELETE FROM plays " +
+				"USING shows, theaters " +
+				"WHERE shows.sdate = " + "\'" + date + "\' " +
+				"AND theaters.tname = " + "\'" + cinematheater + "\' " +
+				"AND shows.sid = plays.sid " +
+				"AND theaters.tid = plays.tid");
+		/*
+		If there are nay bookings on this day, set the status to 'Cancelled'
+		 */
+		//Execute query to update the table if there are any bookings on the given day
+		esql.executeUpdate("UPDATE bookings " +
+				"SET status = 'Cancelled' " +
+				"WHERE bdatetime::text LIKE " + "\'" + date + "%\'");
+
+
 	}
-	
+
 	public static void ListTheatersPlayingShow(Ticketmaster esql){//9
 		//
-		
+
 	}
-	
-	public static void ListShowsStartingOnTimeAndDate(Ticketmaster esql){//10
-		//
-		
+
+	public static void ListShowsStartingOnTimeAndDate(Ticketmaster esql) throws IOException, SQLException {//10
+		/*
+		List the shows that start on the given time and date
+		 */
+		//Grab the date
+		System.out.print("Input the date that you are searching for (yyyy-mm-dd): ");
+		String date = in.readLine();
+		//Grab the time
+		System.out.print("Input the start time that you are searching for (hh:mm:ss): ");
+		String time = in.readLine();
+
+		//Execute query
+		esql.executeQueryAndPrintResult("SELECT * " +
+				"FROM shows " +
+				"WHERE sdate = " + "\'" + date + "\'" +
+				"AND sttime = " + "\'" + time + "\'");
 	}
 
 	public static void ListMovieTitlesContainingLoveReleasedAfter2010(Ticketmaster esql){//11
 		//
-		
+
 	}
 
-	public static void ListUsersWithPendingBooking(Ticketmaster esql){//12
-		//
-		
+	public static void ListUsersWithPendingBooking(Ticketmaster esql) throws SQLException{//12
+		/*
+		List the First Name, Last Name, and email of Users with 'Pending' bookings
+		 */
+		//Execute query
+		esql.executeQueryAndPrintResult("SELECT u.fname, u.lname, u.email " +
+				"FROM users u, bookings b " +
+				"WHERE u.email = b.email " +
+				"AND b.status = 'Pending' ");
+
 	}
 
 	public static void ListMovieAndShowInfoAtCinemaInDateRange(Ticketmaster esql){//13
 		//
-		
+
 	}
 
-	public static void ListBookingInfoForUser(Ticketmaster esql){//14
-		//
-		
+	public static void ListBookingInfoForUser(Ticketmaster esql)throws IOException, SQLException{//14
+		/*
+		List the Movie Title, Show Date & Start Time, Theater Name, and Cinema Seat Number fora all Bookings
+		of a Given User
+		 */
+		//Grab the email
+		System.out.print("Input the email to search for: ");
+		String email = in.readLine();
+
+		//execute query
+		//**Also include a check for booking status to make sure the booking has been paid for. Will not display
+		//any results if status is 'Pending' or 'Cancelled'**
+		esql.executeQueryAndPrintResult("SELECT DISTINCT m.title, s.sdate, s.sttime, t.tname, c.sno " +
+				"FROM movies m, shows s, theaters t, cinemaseats c, bookings b, plays p " +
+				"WHERE b.email = " + "\'" + email + "\'" +
+				"AND b.sid = s.sid " +
+				"AND s.mvid = m.mvid " +
+				"AND s.sid = p.sid " +
+				"AND t.tid = p.tid " +
+				"AND c.tid = t.tid " +
+				"AND b.status = 'Paid'");
+
 	}
 	
 }
