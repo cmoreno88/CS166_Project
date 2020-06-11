@@ -17,12 +17,15 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.io.File;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
+//import java.io.File;
+//import java.io.FileReader;
+//import java.io.BufferedReader;
+//import java.io.InputStreamReader;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Scanner;
+
 
 /**
  * This class defines a simple embedded SQL utility class that is designed to
@@ -319,18 +322,18 @@ public class Ticketmaster{
 		readChoice();
 		System.out.print("Looks good");
 		// Get input from user
-		/*
-		* Users have:
+		
+		 Users have:
     	email VARCHAR(64) NOT NULL,
     	lname VARCHAR(32) NOT NULL,  -- Last name
     	fname VARCHAR(32) NOT NULL,  -- First name
     	phone NUMERIC(10, 0),
     	pwd CHAR(64) NOT NULL,  -- SHA256 hash of password
     	PRIMARY KEY(email)
-		* */
+		
 		return;
-	}
-	*/
+	}*/
+	
 
 	public static void AddUser(Ticketmaster esql) throws SQLException {//1
 
