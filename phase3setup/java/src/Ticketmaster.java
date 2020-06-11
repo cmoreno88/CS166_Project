@@ -316,38 +316,29 @@ public class Ticketmaster{
 		return input;
 	}//end readChoice
 	
-	/*
-		Users have:
-    	email VARCHAR(64) NOT NULL,
-    	lname VARCHAR(32) NOT NULL,  -- Last name
-    	fname VARCHAR(32) NOT NULL,  -- First name
-    	phone NUMERIC(10, 0),
-    	pwd CHAR(64) NOT NULL,  -- SHA256 hash of password
-    	PRIMARY KEY(email)
-		
-		return;
-	}*/
-	
 
-	public static void AddUser(Ticketmaster esql) throws SQLException {//1
+	public static void AddUser(Ticketmaster esql) throws IOException, SQLException {//1
 		Scanner input = new Scanner(System.in);
 
 		//Prompt user to enter email, lname, fname, phone, and pwd
 		System.out.print("Enter email: ");
 		String email = in.readLine();
+		
 		System.out.print("Enter last name: ");
-		string lname = in.readline();
+		String lname = in.readLine();
+		
 		System.out.print("Enter first name: ");
-		string fname = in.readline();
+		String fname = in.readLine();
+		
 		System.out.print("Enter phone number: ");
 		String phone = in.readLine();
+		
 		System.out.print("Enter password: ");
 		String pwd = in.readLine();
 
 		//Insert values into the query
-		String insertQuery = "INSERT INTO Users VALUES(" + email+ "," +  "\'"+ lname + "\'"
-				+ "," + fname + "," + phone + "," + pwd
-				+ ")";
+		String insertQuery = "INSERT INTO Users VALUES(" + "\'"+ email+ "\'" + "," +  "\'"+ lname+ "\'"
+				+ "," + "\'" +fname+ "\'" +"," + phone+ "," + "\'" + pwd+ "\'" + ")";
 		//Show the query to the console.
 		System.out.println(insertQuery);
 		//Execute the query
