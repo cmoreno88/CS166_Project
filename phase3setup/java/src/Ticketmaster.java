@@ -317,13 +317,7 @@ public class Ticketmaster{
 	}//end readChoice
 	
 	/*
-	public static void AddUser(Ticketmaster esql){//1
-
-		readChoice();
-		System.out.print("Looks good");
-		// Get input from user
-		
-		 Users have:
+		Users have:
     	email VARCHAR(64) NOT NULL,
     	lname VARCHAR(32) NOT NULL,  -- Last name
     	fname VARCHAR(32) NOT NULL,  -- First name
@@ -336,6 +330,28 @@ public class Ticketmaster{
 	
 
 	public static void AddUser(Ticketmaster esql) throws SQLException {//1
+		Scanner input = new Scanner(System.in);
+
+		//Prompt user to enter email, lname, fname, phone, and pwd
+		System.out.print("Enter email: ");
+		String email = in.readLine();
+		System.out.print("Enter last name: ");
+		string lname = in.readline();
+		System.out.print("Enter first name: ");
+		string fname = in.readline();
+		System.out.print("Enter phone number: ");
+		String phone = in.readLine();
+		System.out.print("Enter password: ");
+		String pwd = in.readLine();
+
+		//Insert values into the query
+		String insertQuery = "INSERT INTO Users VALUES(" + email+ "," +  "\'"+ lname + "\'"
+				+ "," + fname + "," + phone + "," + pwd
+				+ ")";
+		//Show the query to the console.
+		System.out.println(insertQuery);
+		//Execute the query
+		esql.executeUpdate(insertQuery);
 
 
 	}
@@ -473,7 +489,7 @@ public class Ticketmaster{
 	}
 
 	public static void ListTheatersPlayingShow(Ticketmaster esql){//9
-		//
+
 
 	}
 
@@ -496,7 +512,7 @@ public class Ticketmaster{
 	}
 
 	public static void ListMovieTitlesContainingLoveReleasedAfter2010(Ticketmaster esql){//11
-		//
+
 
 	}
 
@@ -513,7 +529,7 @@ public class Ticketmaster{
 	}
 
 	public static void ListMovieAndShowInfoAtCinemaInDateRange(Ticketmaster esql){//13
-		//
+		//range would be user input
 
 	}
 
