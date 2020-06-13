@@ -340,7 +340,7 @@ public class Ticketmaster{
 		String insertQuery = "INSERT INTO Users VALUES(" + "\'"+ email+ "\'" + "," +  "\'"+ lname+ "\'"
 				+ "," + "\'" +fname+ "\'" +"," + phone+ "," + "\'" + pwd+ "\'" + ")";
 		//Show the query to the console.
-		System.out.println(insertQuery);
+		//System.out.println(insertQuery);
 		//Execute the query
 		esql.executeUpdate(insertQuery);
 
