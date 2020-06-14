@@ -37,8 +37,8 @@ public class Ticketmaster{
 	//reference to physical database connection
 	private Connection _connection = null;
 	static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-	public int nxtMvid = 60;		//	tracks next available movie id
-	public int nxtSid = 200;		//	tracks next available show id
+	static public int nxtMvid = 60;		//	tracks next available movie id
+	static public int nxtSid = 200;		//	tracks next available show id
 	public int nxtTid = 1000;		//	tracks next available theater id
 
 	public Ticketmaster(String dbname, String dbport, String user, String passwd) throws SQLException {
@@ -346,7 +346,7 @@ public class Ticketmaster{
 		//System.out.println(insertQuery);
 		//Execute the query
 		esql.executeUpdate(insertQuery);
-		System.out.print("User has been added to database!");
+		System.out.print("User has been added to database!\n");
 
 	}
 
@@ -449,7 +449,7 @@ public class Ticketmaster{
 		String description = in.readLine();
 
 		System.out.print("Please enter the new movie duration: ");
-		int duration = in.readLine();
+		int duration = input.nextInt();
 
 		System.out.print("Please enter the new movie language code, such as en, de, etc.: ");
 		String lang = in.readLine();
@@ -464,7 +464,7 @@ public class Ticketmaster{
 		System.out.print("Please enter show start time: ");
 		String sttime = in.readLine();
 
-		String.out.print("Please enter show endtime: ");
+		System.out.print("Please enter show endtime: ");
 		String edtime = in.readLine();
 
 		// Insert values into the insert statement for movies
@@ -485,12 +485,12 @@ public class Ticketmaster{
 		System.out.print("Your new Show ID is " + nxtSid);
 
 		System.out.print("Please enter the TID that you would like your show assigned to: ");
-		int tid = in.readLine();
+		int tid = input.nextInt();
 
 		String insrtPlays = "INSERT INTO plays VALUES(" + nxtSid + "," + tid + ")";
 		esql.executeUpdate(insrtPlays);
 
-		System.out.print("Your new movie has been scheduled to play! at " + tid);
+		System.out.print("Your new movie has been scheduled to play! at " + tid +"\n");
 
 		//nxtTid += 1;
 		nxtMvid += 1;
@@ -505,6 +505,7 @@ public class Ticketmaster{
 		esql.executeUpdate("UPDATE bookings " +
 				"SET status = 'Cancelled' " +
 				"WHERE status = 'Pending'");
+		System.out.print("All pending bookings have been cancelled!\n");
 	}
 
 	public static void ChangeSeatsForBooking(Ticketmaster esql) throws SQLException{//5
@@ -568,7 +569,7 @@ public class Ticketmaster{
 		*/
 		String clrBooks = "delete from bookings where status = 'Cancelled'";
 		esql.executeUpdate(clrBooks);
-		System.out.print("All bookings with status cancelled have been removed from DataBase.")
+		System.out.print("All bookings with status cancelled have been removed from DataBase.\n");
 	}
 
 	public static void RemoveShowsOnDate(Ticketmaster esql) throws IOException, SQLException {//8
@@ -632,7 +633,7 @@ public class Ticketmaster{
 		esql.executeQueryAndPrintResult("SELECT * " +
 				"FROM shows " +
 				"WHERE sdate = " + "\'" + date + "\'" +
-				"AND sttime = " + "\'" + time + "\'");
+				"AND sttime = " + "\'" + time + "\'");	
 	}
 
 	public static void ListMovieTitlesContainingLoveReleasedAfter2010(Ticketmaster esql){//11
@@ -655,8 +656,8 @@ public class Ticketmaster{
 
 	}
 
-	public static void ListMovieAndShowInfoAtCinemaInDateRange(Ticketmaster esql){//13
-		//range would be user input
+	public static void ListMovieAndShowInfoAtCinemaInDateRange(Ticketmaster esql)throws IOException, SQLException {//13
+		//I adjusted the results to include theaters that are actually playing the requested movie.
 		/* List the Title, Duration, Date, and Time of Shows Playing a Given Movie at a 
 		 * Given Cinema During a Date Range:
 		 * 	List the Movie Title, Movie Duration, Show Date, and Show Start Time of all Shows
@@ -673,23 +674,25 @@ public class Ticketmaster{
 		 * and m.mvid = s.mvid and s.sid = p.sid and t.tid = p.tid;
 		 * 
 		 */
-		System.out.print("Please enter the theater ID that you would like to search: ");
-		int tid = in.readLine();
+		// Implementing this input usually yeilded no search results
+		// "t.cid =" +  cid
+		// Scanner input = new Scanner(System.in);
+		// System.out.print("Please enter the theater ID that you would like to search: ");
+		// int cid = input.nextInt();
 
 		System.out.print("Please enter the movie title that you would like to search: ");
 		String title = in.readLine();
-
-		System.out.print("Please enter the start date for the range that you would like to search: ");
+		
+		System.out.print("Please enter the start date for your search (yyyy-mm-dd): ");
 		String bgnRange = in.readLine();
 
-		System.out.print("Please enter the end date for the range that you would like to search: ");
+		System.out.print("Please enter the end date for your search (yyyy-mm-dd): ");
 		String endRange = in.readLine();
 
-		String rangeQuery = "select m.title, m.duration, s.sdate, s.sttime from movies m, shows s, plays p, theaters t" +
-				"where m.title = " + "\'" + title + "\'" + "and s.sdate between \'" + bgnRange + "\' and \'" + endRange + "\'"+
-				"and m.mvid = s.mvid and s.sid = p.sid and p.tid = " + tid;
+		String rangeQuery = "select t.tname, m.title, m.duration, s.sdate, s.sttime from movies m, shows s, plays p, theaters t where m.title = " + "\'" + title + "\'" + "and s.sdate between" + "\'" + bgnRange + "\'" + " and " + "\'" + endRange + "\'" + "and m.mvid = s.mvid and s.sid = p.sid and p.tid =  + t.tid";
 
 		esql.executeQueryAndPrintResult(rangeQuery);
+		System.out.print(esql.executeQuery(rangeQuery) + " Results matched your criteria\n");
 	}
 
 	public static void ListBookingInfoForUser(Ticketmaster esql)throws IOException, SQLException{//14
