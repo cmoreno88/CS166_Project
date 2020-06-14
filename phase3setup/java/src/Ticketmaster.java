@@ -403,11 +403,68 @@ public class Ticketmaster{
 
 	}
 
-	public static void AddMovieShowingToTheater(Ticketmaster esql){//3
-
+	public static void AddMovieShowingToTheater(Ticketmaster esql) throws IOException, SQLException {//3
+		/* Add Movie Showing for an Existing Theater
+		 * Add a showing of a new movie using the Shows, Plays, and Movie tables for a given
+		 * theater.
+		 * You should provide an interface that takes as input the information of a new
+		 * movie (i.e. title, duration) and show(i.e. start time) and checks if the provided information 
+		 * is valid based on the constraints of the database schema. 
+		 * Note: The order matters for this query. 
+		 * What happens when you try inserting in the wrong order? 
+		 * Think about why that happens and you’ll know what the correct order should be.
+		 * MUST DO inserts in the order movies -> shows -> plays
+		 * 
+		 * GET all the required info then run the queries	
+		 * 
+			esql.executeUpdate("DELETE FROM plays " +
+			"USING shows, theaters " +
+			"WHERE shows.sdate = " + "\'" + date + "\' " +
+			"AND theaters.tname = " + "\'" + cinematheater + "\' " +
+			"AND shows.sid = plays.sid " +
+			"AND theaters.tid = plays.tid");
+		 * 
+		 * MAKE mvid > 60 and sid > 200
+		 * 
+		 * NEED to get input from user;
+		 * 
+		 * QUERY these must be ran in this order through seperate function calls:
+		 * insert into movies (mvid, title, rdate, country, description, duration, lang, genre) 
+		 * values(60, 'fakefilm', '1988-10-02', 'United States', 'OK movie', 5555, 'en', 'documentary');
+		 * 
+		 * insert into shows (sid, mvid, sdate, sttime, edtime)
+		 * values (201, 60, '1/2/2015', '03:00', '05:00'); 
+		 * 
+		 * insert into plays (sid, tid) values (201, 50);
+		 * 
+		 */
+		 
+		 System.out.print("Please enter the required information for your new movie:\n");
+		 System.out.print("");
+		 String title = in.readline();
+		 
+		 System.out.print("release date");
+		 String rdate = in.readline();
+		 
+		 System.out.print("");
+		 String country = in.readline();
+		 
+		 System.out.print("");
+		 String description = in.readline();
+		 
+		 System.out.print("");
+		 String duration = in.readline();
+		 
+		 System.out.print("");
+		 String lang = in.readline();
+		 
+		 System.out.print("");
+		 String genre = in.readline();
+		// input this new movie into the database then continue
+		
 	}
 
-	public static void CancelPendingBookings(Ticketmaster esql) throws SQLException{//4
+	public static void CancelPendingBookings(Ticketmaster esql) throws IOException, SQLException{//4
 		/*
 		Sets status to 'Cancelled' for all records that have status = 'Pending'
 		 */
@@ -416,8 +473,34 @@ public class Ticketmaster{
 				"WHERE status = 'Pending'");
 	}
 
-	public static void ChangeSeatsForBooking(Ticketmaster esql) throws Exception{//5
-
+	public static void ChangeSeatsForBooking(Ticketmaster esql) throws SQLException{//5
+		/* Change Seats Reserved for a Booking
+		 * JUST override the seats dont worry about if someone is sitting there;
+		 * Replace the seats reserved for a given booking with different seats in the same theater.
+		 * For example, a user changes their mind about where they want to sit. 
+		 * They have already booked seats 10 and 11 but would like to move back one row to seats 20 and 21.
+		 * This should only work if the new seats are available and they are the same price.
+		 * 
+		 * bookings -> showseats -> cinemaseats
+		 * Ask user for bid and new seat numbers
+		 * 
+		 * THIS returns seat numbers for a specific booking ID
+		 * select c.sno from bookings b, showseats s, cinemaseats c 
+		 * where b.bid = 401 and b.sid = s.sid and s.csid = c.csid;
+		 * 
+		 * THIS changed all of the seat numbers to 4 in the users booking:
+		 * update cinemaseats set sno = 4 where sno in 
+		 * (select c.sno from bookings b, showseats s, cinemaseats c 
+		 * where b.bid = 401 and b.sid = s.sid and s.csid = c.csid);
+		 * 
+		 * ASK the user for their booking number and what seat # they want to change & what they want to 
+		 * change it to.
+		 * 
+		 * 
+		 * QUERY:
+		 * 
+		 * 
+		 * */
 	}
 
 	public static void RemovePayment(Ticketmaster esql)throws IOException, SQLException{//6
@@ -442,11 +525,15 @@ public class Ticketmaster{
 				"WHERE payments.bid = " + bid + " " +
 				"AND bookings.status = 'Cancelled'");
 
-
 	}
 
 	public static void ClearCancelledBookings(Ticketmaster esql){//7
-
+		/* 
+		 * Clear Cancelled Bookings
+		 * 
+		 * QUERY:
+		 * delete from bookings where status = 'Cancelled'
+		*/
 	}
 
 	public static void RemoveShowsOnDate(Ticketmaster esql) throws IOException, SQLException {//8
@@ -480,8 +567,19 @@ public class Ticketmaster{
 	}
 
 	public static void ListTheatersPlayingShow(Ticketmaster esql){//9
-
-
+		/*
+		 * List all Theaters in a Cinema -DO THIS FIRST// Doesn't work every cinema has 1 theater
+		 * Playing a Given Show
+		 * 
+		 * Given only a movie title, so in this QUERY 'The Lion King' would be user input
+		 * 
+		 * QUERY:
+		 * select t.tname, s.sttime from movies m, shows s, plays p, theaters t 
+		 * where m.title = 'The Lion King' and m.mvid = s.mvid and s.sid = p.sid and t.tid = p.tid;
+		 * 
+		 * */
+		
+		
 	}
 
 	public static void ListShowsStartingOnTimeAndDate(Ticketmaster esql) throws IOException, SQLException {//10
@@ -503,8 +601,11 @@ public class Ticketmaster{
 	}
 
 	public static void ListMovieTitlesContainingLoveReleasedAfter2010(Ticketmaster esql){//11
-
-
+		/* List Movie Titles Containing “love” Released After 2010
+		 * 
+		 * QUERY:
+		 * select * from movies where title like '%Love%' and rdate > '2010-01-01';
+		 */ 
 	}
 
 	public static void ListUsersWithPendingBooking(Ticketmaster esql) throws SQLException{//12
@@ -521,7 +622,23 @@ public class Ticketmaster{
 
 	public static void ListMovieAndShowInfoAtCinemaInDateRange(Ticketmaster esql){//13
 		//range would be user input
-
+		/* List the Title, Duration, Date, and Time of Shows Playing a Given Movie at a 
+		 * Given Cinema During a Date Range:
+		 * 	List the Movie Title, Movie Duration, Show Date, and Show Start Time of all Shows
+		 * 	playing a given Movie at a given Cinema within a date range. 
+		 * 	This would be useful for users to find the best time for their schedule to book a 
+		 * 	showing of a movie at a given cinema.
+		 * 
+		 * we get tid and movie title and dates range begin and end
+		 * 
+		 * QUERY:
+		 * select m.title, m.duration, s.sdate, s.sttime 
+		 * from movies m, shows s, plays p, theaters t 
+		 * where m.title = 'Titanic' and s.sdate between '1995-01-01' and '2019-03-01' 
+		 * and m.mvid = s.mvid and s.sid = p.sid and t.tid = p.tid;
+		 * 
+		 */
+		 
 	}
 
 	public static void ListBookingInfoForUser(Ticketmaster esql)throws IOException, SQLException{//14

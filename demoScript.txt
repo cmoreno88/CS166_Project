@@ -1,0 +1,13 @@
+CS166 Final Project Script
+
+- Show code
+- Show that the user doesn't exist by 
+- run queries from the Ticketmaster.java app
+- Queries to run:
+    1.  Input User info
+    3.  Input movie and show info
+    6.  Input booking ID (bid), this would be like the confirmation #
+    9.  Input show
+    12. No input just run
+
+
