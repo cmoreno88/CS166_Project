@@ -37,7 +37,10 @@ public class Ticketmaster{
 	//reference to physical database connection
 	private Connection _connection = null;
 	static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-	
+	public int nxtMvid = 60;		//	tracks next available movie id
+	public int nxtSid = 200;		//	tracks next available show id
+	public int nxtTid = 1000;		//	tracks next available theater id
+
 	public Ticketmaster(String dbname, String dbport, String user, String passwd) throws SQLException {
 		System.out.print("Connecting to database...");
 		try{
@@ -343,7 +346,7 @@ public class Ticketmaster{
 		//System.out.println(insertQuery);
 		//Execute the query
 		esql.executeUpdate(insertQuery);
-
+		System.out.print("User has been added to database!");
 
 	}
 
@@ -414,18 +417,11 @@ public class Ticketmaster{
 		 * What happens when you try inserting in the wrong order? 
 		 * Think about why that happens and you’ll know what the correct order should be.
 		 * MUST DO inserts in the order movies -> shows -> plays
-		 * 
-		 * GET all the required info then run the queries	
-		 * 
-			esql.executeUpdate("DELETE FROM plays " +
-			"USING shows, theaters " +
-			"WHERE shows.sdate = " + "\'" + date + "\' " +
-			"AND theaters.tname = " + "\'" + cinematheater + "\' " +
-			"AND shows.sid = plays.sid " +
-			"AND theaters.tid = plays.tid");
-		 * 
+		 *
 		 * MAKE mvid > 60 and sid > 200
-		 * 
+		 * should automate this action
+		 *
+		 *
 		 * NEED to get input from user;
 		 * 
 		 * QUERY these must be ran in this order through seperate function calls:
@@ -436,32 +432,70 @@ public class Ticketmaster{
 		 * values (201, 60, '1/2/2015', '03:00', '05:00'); 
 		 * 
 		 * insert into plays (sid, tid) values (201, 50);
-		 * 
 		 */
-		 
-		 System.out.print("Please enter the required information for your new movie:\n");
-		 System.out.print("");
-		 String title = in.readline();
-		 
-		 System.out.print("release date");
-		 String rdate = in.readline();
-		 
-		 System.out.print("");
-		 String country = in.readline();
-		 
-		 System.out.print("");
-		 String description = in.readline();
-		 
-		 System.out.print("");
-		 String duration = in.readline();
-		 
-		 System.out.print("");
-		 String lang = in.readline();
-		 
-		 System.out.print("");
-		 String genre = in.readline();
+		Scanner input = new Scanner(System.in);
+
+		//Prompt user to enter title, rdate, country, description, duration, lang, genre
+		System.out.print("Please enter the new movie title: ");
+		String title = in.readLine();
+
+		System.out.print("Please enter the movie release date: ");
+		String rdate = in.readLine();
+
+		System.out.print("Please enter the production Country of the new movie: ");
+		String country = in.readLine();
+
+		System.out.print("Please enter a short movie description: ");
+		String description = in.readLine();
+
+		System.out.print("Please enter the new movie duration: ");
+		int duration = in.readLine();
+
+		System.out.print("Please enter the new movie language code, such as en, de, etc.: ");
+		String lang = in.readLine();
+
+		System.out.print("Please enter the genre of the new movie: ");
+		String genre = in.readLine();
+
+		// Prompt user for sdate, sttime, edtime
+		System.out.print("Please enter the show date: ");
+		String sdate = in.readLine();
+
+		System.out.print("Please enter show start time: ");
+		String sttime = in.readLine();
+
+		String.out.print("Please enter show endtime: ");
+		String edtime = in.readLine();
+
+		// Insert values into the insert statement for movies
+		String insrtMovies = "INSERT INTO movies VALUES(" + nxtMvid + "\'"+ title + "\'" + "," +  "\'"+ rdate + "\'"
+				+ "," + "\'" + country + "\'" + "," + "\'" + description + "\'" + "," + duration + "," + "\'" + lang + "\'" + "," + "\'" + genre + "\'" + ")";
+		// Show the query to the console.
+		// System.out.println(insertQuery);
+		// Execute the query
+		esql.executeUpdate(insrtMovies);
+		System.out.print("Your new Movie ID is " + nxtMvid);
 		// input this new movie into the database then continue
-		
+
+		// Insert values into the insert statement for shows
+		String insrtShows = "INSERT INTO shows VALUES(" + nxtSid + "," + nxtMvid + "," + "\'"+ sdate + "\'" + "," +  "\'"+ sttime + "\'"
+				+ "," + "\'" + edtime + "\'" + ")";
+		// Execute the query
+		esql.executeUpdate(insrtShows);
+		System.out.print("Your new Show ID is " + nxtSid);
+
+		System.out.print("Please enter the TID that you would like your show assigned to: ");
+		int tid = in.readLine();
+
+		String insrtPlays = "INSERT INTO plays VALUES(" + nxtSid + "," + tid + ")";
+		esql.executeUpdate(insrtPlays);
+
+		System.out.print("Your new movie has been scheduled to play! at " + tid);
+
+		//nxtTid += 1;
+		nxtMvid += 1;
+		nxtSid = nxtSid++;
+		// if mvid <= nxtMvid print(please enter a value greater than)
 	}
 
 	public static void CancelPendingBookings(Ticketmaster esql) throws IOException, SQLException{//4
@@ -527,13 +561,14 @@ public class Ticketmaster{
 
 	}
 
-	public static void ClearCancelledBookings(Ticketmaster esql){//7
-		/* 
-		 * Clear Cancelled Bookings
-		 * 
+	public static void ClearCancelledBookings(Ticketmaster esql) throws SQLException {//7
+		/* Clear Cancelled Bookings
 		 * QUERY:
 		 * delete from bookings where status = 'Cancelled'
 		*/
+		String clrBooks = "delete from bookings where status = 'Cancelled'";
+		esql.executeUpdate(clrBooks);
+		System.out.print("All bookings with status cancelled have been removed from DataBase.")
 	}
 
 	public static void RemoveShowsOnDate(Ticketmaster esql) throws IOException, SQLException {//8
@@ -638,7 +673,23 @@ public class Ticketmaster{
 		 * and m.mvid = s.mvid and s.sid = p.sid and t.tid = p.tid;
 		 * 
 		 */
-		 
+		System.out.print("Please enter the theater ID that you would like to search: ");
+		int tid = in.readLine();
+
+		System.out.print("Please enter the movie title that you would like to search: ");
+		String title = in.readLine();
+
+		System.out.print("Please enter the start date for the range that you would like to search: ");
+		String bgnRange = in.readLine();
+
+		System.out.print("Please enter the end date for the range that you would like to search: ");
+		String endRange = in.readLine();
+
+		String rangeQuery = "select m.title, m.duration, s.sdate, s.sttime from movies m, shows s, plays p, theaters t" +
+				"where m.title = " + "\'" + title + "\'" + "and s.sdate between \'" + bgnRange + "\' and \'" + endRange + "\'"+
+				"and m.mvid = s.mvid and s.sid = p.sid and p.tid = " + tid;
+
+		esql.executeQueryAndPrintResult(rangeQuery);
 	}
 
 	public static void ListBookingInfoForUser(Ticketmaster esql)throws IOException, SQLException{//14
