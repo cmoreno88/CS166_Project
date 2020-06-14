@@ -629,11 +629,15 @@ public class Ticketmaster{
 		System.out.print("Input the start time that you are searching for (hh:mm:ss): ");
 		String time = in.readLine();
 
-		//Execute query
-		esql.executeQueryAndPrintResult("SELECT * " +
+
+		String rangeQuery = "SELECT * " +
 				"FROM shows " +
 				"WHERE sdate = " + "\'" + date + "\'" +
-				"AND sttime = " + "\'" + time + "\'");	
+				"AND sttime = " + "\'" + time + "\'";
+						
+		//Execute query
+		esql.executeQueryAndPrintResult(rangeQuery);	
+		System.out.print(esql.executeQuery(rangeQuery) + " Results matched your criteria\n");
 	}
 
 	public static void ListMovieTitlesContainingLoveReleasedAfter2010(Ticketmaster esql){//11
