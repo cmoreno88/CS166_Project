@@ -417,12 +417,6 @@ public class Ticketmaster{
 		 * What happens when you try inserting in the wrong order? 
 		 * Think about why that happens and you’ll know what the correct order should be.
 		 * MUST DO inserts in the order movies -> shows -> plays
-		 *
-		 * MAKE mvid > 60 and sid > 200
-		 * should automate this action
-		 *
-		 *
-		 * NEED to get input from user;
 		 * 
 		 * QUERY these must be ran in this order through seperate function calls:
 		 * insert into movies (mvid, title, rdate, country, description, duration, lang, genre) 
@@ -530,11 +524,9 @@ public class Ticketmaster{
 		 * 
 		 * ASK the user for their booking number and what seat # they want to change & what they want to 
 		 * change it to.
-		 * 
-		 * 
+		 *
 		 * QUERY:
-		 * 
-		 * 
+		 *
 		 * */
 	}
 
@@ -602,9 +594,8 @@ public class Ticketmaster{
 
 	}
 
-	public static void ListTheatersPlayingShow(Ticketmaster esql){//9
-		/*
-		 * List all Theaters in a Cinema -DO THIS FIRST// Doesn't work every cinema has 1 theater
+	public static void ListTheatersPlayingShow(Ticketmaster esql) throws IOException, SQLException {//9
+		/* List all Theaters in a Cinema  // Every cinema has only 1 theater
 		 * Playing a Given Show
 		 * 
 		 * Given only a movie title, so in this QUERY 'The Lion King' would be user input
@@ -614,6 +605,13 @@ public class Ticketmaster{
 		 * where m.title = 'The Lion King' and m.mvid = s.mvid and s.sid = p.sid and t.tid = p.tid;
 		 * 
 		 * */
+		System.out.print("Please enter the movie title that you would like to search: ");
+		String title = in.readLine();
+
+		String thtrListQuery = "select t.tname, s.sttime from movies m, shows s, plays p, theaters t where m.title = " + "\'" + title + "\'" + "and m.mvid = s.mvid and s.sid = p.sid and p.tid = t.tid";
+
+		esql.executeQueryAndPrintResult(thtrListQuery);
+		System.out.print(esql.executeQuery(thtrListQuery) + " Results matched your criteria\n");
 		
 		
 	}
@@ -645,7 +643,11 @@ public class Ticketmaster{
 		 * 
 		 * QUERY:
 		 * select * from movies where title like '%Love%' and rdate > '2010-01-01';
-		 */ 
+		 */
+		String loveQuery = "select * from movies where title like '%Love%' and rdate > '2010-01-01'";
+		esql.executeUpdate(loveQuery);
+		System.out.print("There were "+esql.executeQuery(loveQuery)+" results found.\n");
+
 	}
 
 	public static void ListUsersWithPendingBooking(Ticketmaster esql) throws SQLException{//12
