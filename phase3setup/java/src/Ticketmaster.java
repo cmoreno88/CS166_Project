@@ -508,7 +508,7 @@ public class Ticketmaster{
 		System.out.print("All pending bookings have been cancelled!\n");
 	}
 
-	public static void ChangeSeatsForBooking(Ticketmaster esql) throws SQLException{//5
+	public static void ChangeSeatsForBooking(Ticketmaster esql) throws IOException, SQLException{//5
 		/* Change Seats Reserved for a Booking
 		 * JUST override the seats dont worry about if someone is sitting there;
 		 * Replace the seats reserved for a given booking with different seats in the same theater.
@@ -536,6 +536,25 @@ public class Ticketmaster{
 		 * 
 		 * 
 		 * */
+		Scanner input = new Scanner(System.in);
+		System.out.print("Enter number of seats to change: ");
+		int num_seats = input.nextInt();
+		System.out.print("Enter the booking ID: ");
+		Integer bid = input.nextInt();
+		for (int i = 0; i < num_seats; i++)
+		{
+			System.out.print("Enter the seat number you want changed: ");
+			int sno = input.nextInt();
+			System.out.print("Enter the new seat number you want to change to: ");
+			int new_sno = input.nextInt();
+			System.out.print("Enter the theater id: ");
+			int tid = input.nextInt();
+			System.out.println("Making changes...");
+			esql.executeUpdate("UPDATE cinemaseats SET sno = " + new_sno + " WHERE csid = (SELECT c.csid FROM bookings b, showseats s, cinemaseats c WHERE b.bid = " + bid + " AND b.sid = s.sid AND s.csid = c.csid AND c.tid = " + tid + " AND c.sno = " + sno + ")");
+			
+		}
+		System.out.print("Changes Complete.\n");
+		
 	}
 
 	public static void RemovePayment(Ticketmaster esql)throws IOException, SQLException{//6
